@@ -29,10 +29,10 @@ var client *fauna.Client
 var clientERR error
 
 func main() {
-	r := gin.Default()
+	r := gin.New()
 	r.Use(corsMiddleware())
 
-	client,clientERR = fauna.NewDefaultClient()
+	client, clientERR = fauna.NewDefaultClient()
 
 	if clientERR != nil {
 		panic(clientERR)
@@ -72,7 +72,8 @@ func main() {
 		ctx.JSON(200, data)
 	})
 
-	r.POST("/user",createCustomer)
+	r.POST("/user", createCustomer)
+	r.POST("/task", createTask)
 
 	r.Run()
 }
@@ -92,16 +93,19 @@ func corsMiddleware() gin.HandlerFunc {
 }
 
 func createCustomer(ctx *gin.Context) {
-	 data := User{}
+	data := User{}
 
 	if err := ctx.BindJSON(&data); err != nil {
 		ctx.JSON(404, ctx.Errors)
 		return
 	}
 
-	createUser, _ := fauna.FQL(`User.create(${data})`,map[string]any{"customers":data.Name})
-	res,err := client.Query(createUser)
+	createUser, err := fauna.FQL(`User.create(${data})`, map[string]any{"data": data})
 
+	if err != nil {
+		panic(err)
+	}
+	res, err := client.Query(createUser)
 	if err != nil {
 		panic(err)
 	}
@@ -110,7 +114,38 @@ func createCustomer(ctx *gin.Context) {
 	if err := res.Unmarshal(&scout); err != nil {
 		panic(err)
 	}
-	fmt.Println(scout.Name)
-	ctx.JSON(200,scout)
 
+	fmt.Println(scout.Name)
+	ctx.JSON(200, scout)
 }
+
+func createTask(ctx *gin.Context) {
+	task := Task{}
+
+	if err := ctx.BindJSON(&task); err != nil {
+		ctx.JSON(404, ctx.Errors)
+		return
+	}
+
+	createTask, err := fauna.FQL(`Task.create(${task})`, map[string]any{"task": task})
+
+	if err != nil {
+		panic(err)
+	}
+
+	res, err := client.Query(createTask)
+	if err != nil {
+		panic(err)
+	}
+
+	var scout Task
+
+	if err := res.Unmarshal(&scout); err != nil {
+		panic(err)
+	}
+	fmt.Println(scout.Name)
+	ctx.JSON(200, scout)
+
+	ctx.JSON(200, scout)
+}
+
