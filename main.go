@@ -73,8 +73,10 @@ func main() {
 	})
 
 	r.POST("/user", createCustomer)
+
 	r.POST("/task", createTask)
 
+	r.POST("/project", createProject)
 	r.Run()
 }
 
@@ -145,7 +147,35 @@ func createTask(ctx *gin.Context) {
 	}
 	fmt.Println(scout.Name)
 	ctx.JSON(200, scout)
+}
+
+func createProject(ctx *gin.Context) {
+	project := project{}
+
+	if err := ctx.BindJSON(&project); err != nil {
+		ctx.JSON(404, ctx.Errors)
+		return
+	}
+
+	createProject, err = fauna.FQL("Porjects.create(${project})",map[string]any{"project":project})
+
+	if err != nil {
+		panic(err)
+	}
+
+	res, err = client.Query(createProject)
+
+	if err != nil {
+		panic(err)
+	}
+
+	var scout Project
+
+	if err := res.Unmarchal(&scout); err != nil {
+		panic(err)
+	}
+
+	fmt.Println(scout.Name)
 
 	ctx.JSON(200, scout)
 }
-
