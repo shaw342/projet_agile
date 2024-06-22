@@ -5,6 +5,7 @@ import (
 
 	"github.com/fauna/fauna-go"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-contrib/cors"
 )
 
 type Project struct {
@@ -17,6 +18,8 @@ type Project struct {
 type User struct {
 	Id   string `json:"id"`
 	Name string `json:"name"`
+	Email string `json:"email"`
+	Password string `json:"password"`
 }
 
 type Task struct {
@@ -30,7 +33,11 @@ var clientERR error
 
 func main() {
 	r := gin.New()
-	r.Use(corsMiddleware())
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"http://localhost:8080", "http://localhost:3000"}
+	config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"}
+	config.AllowHeaders = []string{"Origin", "Content-Length", "Content-Type", "Authorization"}
+	r.Use(cors.New(config))
 
 	client, clientERR = fauna.NewDefaultClient()
 
@@ -80,19 +87,6 @@ func main() {
 	r.Run()
 }
 
-func corsMiddleware() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
-		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
-
-		if c.Request.Method == "OPTIONS" {
-			c.AbortWithStatus(204)
-			return
-		}
-		c.Next()
-	}
-}
 
 func createCustomer(ctx *gin.Context) {
 	data := User{}
@@ -150,20 +144,20 @@ func createTask(ctx *gin.Context) {
 }
 
 func createProject(ctx *gin.Context) {
-	project := project{}
+	project := Project{}
 
 	if err := ctx.BindJSON(&project); err != nil {
 		ctx.JSON(404, ctx.Errors)
 		return
 	}
 
-	createProject, err = fauna.FQL("Porjects.create(${project})",map[string]any{"project":project})
+	createProject, err := fauna.FQL("Projects.create(${project})",map[string]any{"project":project})
 
 	if err != nil {
 		panic(err)
 	}
 
-	res, err = client.Query(createProject)
+	res, err := client.Query(createProject)
 
 	if err != nil {
 		panic(err)
@@ -171,7 +165,7 @@ func createProject(ctx *gin.Context) {
 
 	var scout Project
 
-	if err := res.Unmarchal(&scout); err != nil {
+	if err := res.Unmarshal(&scout); err != nil {
 		panic(err)
 	}
 
