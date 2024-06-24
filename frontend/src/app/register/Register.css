@@ -1,0 +1,28 @@
+button{
+
+    width: 100px;
+    background-color: blue;
+}
+body{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+#form{
+    width: 400px;
+    height: 400px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    background-color: antiquewhite;
+}
+input{
+    width: 100px;
+    border-radius: 1rem;
+}
+form{
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+}
