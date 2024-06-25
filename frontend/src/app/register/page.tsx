@@ -1,6 +1,8 @@
 "use client";
 import "./Register.css";
+import { IoMdMail } from "react-icons/io";
 import { FormEvent } from "react";
+import { IoMail } from "react-icons/io5";
 
 export default function register() {
 
@@ -17,7 +19,7 @@ export default function register() {
           password: formData.get("password"),
         };
       
-        const response = await fetch("http://localhost:8080/api/user", {
+        const response = await fetch("http://localhost:8080/user", {
           method: "POST",
           credentials: "same-origin",
           body: JSON.stringify(data),
@@ -37,9 +39,10 @@ export default function register() {
     </div>
     <form onSubmit={onSubmit}>
     <input type="text" name="name" id="name" />
+    <IoMail id="mail-icon"/>
     <input type="email" name="email" id="email"/>
-    <input type="text" name="password" id="password"/>
-    <button type="submit" id="submit">submit</button>
+    <input type="text" name="password" id="password" />
+    <button type="submit"  className="button-3">submit</button>
     </form>
     </div>)
 }
