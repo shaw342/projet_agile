@@ -1,6 +1,5 @@
 "use client";
 import "./Register.css";
-import { IoMdMail } from "react-icons/io";
 import { FormEvent } from "react";
 import { IoMail } from "react-icons/io5";
 
@@ -11,21 +10,22 @@ export default function register() {
       
         const form = event.currentTarget;
         const formData = new FormData(form);
-      
-        // Extract form data and convert to JSON object
         const data = {
-          name: formData.get("name"),
-          email: formData.get("email"),
-          password: formData.get("password"),
-        };
+          name:formData.get("name"),
+          email:formData.get("email"),
+          password:formData.get("password"),
+
+        }
+        
+        
+        // Extract form data and convert to JSON object
       
         const response = await fetch("http://localhost:8080/user", {
           method: "POST",
-          credentials: "same-origin",
-          body: JSON.stringify(data),
           headers: {
             "Content-Type": "application/json",
           },
+          body: JSON.stringify(data),
         });
       
         const jsonData = await response.json();
