@@ -2,11 +2,10 @@ package main
 
 import (
 	"fmt"
-	"time"
 	"github.com/fauna/fauna-go"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-contrib/cors"
-	"backend/model"
+	"github.com/shaw342/projet_argile/backend/model"
 )
 
 type Project struct {
@@ -16,14 +15,14 @@ type Project struct {
 	Tasks []string `json:"tasks"`
 }
 
-type User struct {
+/*type User struct {
 	Id   string `json:"id"`
 	Name string `json:"name"`
 	Email string `json:"email"`
 	Password string `json:"password"`
 	CreatAt time.Time
 	UpdatAt time.Time
-}
+}*/
 
 type Task struct {
 	Id    string `json:"id"`
@@ -74,7 +73,7 @@ func main() {
 	})
 
 	r.GET("/user/get", func(ctx *gin.Context) {
-		data := User{}
+		data := model.User{}
 
 		data.Id = "123e4567-e89b-12d3-a456-426614174000"
 		data.Name = "shawan"
@@ -92,13 +91,12 @@ func main() {
 
 
 func createCustomer(ctx *gin.Context) {
-	data := User{}
+	data := model.User{}
 
 	if err := ctx.BindJSON(&data); err != nil {
 		ctx.JSON(404, ctx.Errors)
 		return
 	}
-	data.CreatAt = time.Now()
 	createUser, err := fauna.FQL(`User.create(${data})`, map[string]any{"data": data})
 
 	if err != nil {
@@ -108,7 +106,7 @@ func createCustomer(ctx *gin.Context) {
 	if err != nil {
 		panic(err)
 	}
-	var scout User
+	var scout model.User
 
 	if err := res.Unmarshal(&scout); err != nil {
 		panic(err)
