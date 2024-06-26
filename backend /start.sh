@@ -1,2 +1,0 @@
-export FAUNA_SECRET="fnAFjKqVQfAAy5gEY3BBqU5HTONPrQEWwRhwO6x8"
-go run .
