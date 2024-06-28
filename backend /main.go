@@ -63,9 +63,10 @@ func main() {
 		ctx.JSON(200, data)
 	})
 
-	r.POST("/user", repository.CreateCustomer)
+	r.POST("/user", repository.CreateUser)
 	r.POST("/task", repository.CreateTask)
 	r.POST("/project", repository.CreateProject)
+	r.Post("/getId", repository.getIdByName)
 	r.Run()
 }
 
