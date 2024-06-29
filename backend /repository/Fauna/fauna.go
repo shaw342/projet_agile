@@ -109,7 +109,7 @@ func CreateProject(ctx *gin.Context) {
 	ctx.JSON(200, scout)
 }
 
-func geId(name string) string{
+func getId(name string) string{
 	var Id string
 	client := newFaunaClient()
 	query,err := fauna.FQL("User.byName(${name}).map(.id).first()",map[string]any{"name":name})
