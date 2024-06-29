@@ -6,7 +6,9 @@ import (
 	"github.com/fauna/fauna-go"
 	"github.com/gin-gonic/gin"
 	"github.com/shaw342/projet_argile/backend/model"
+	
 )
+
 
 
 func newFaunaClient() *fauna.Client {
@@ -17,7 +19,8 @@ func newFaunaClient() *fauna.Client {
 	return client
 }
 
-func CreateCustomer(ctx *gin.Context) {
+
+func CreateUser(ctx *gin.Context) {
 	client := newFaunaClient()
 	data := model.User{}
 
@@ -104,4 +107,20 @@ func CreateProject(ctx *gin.Context) {
 	fmt.Println(scout.Name)
 
 	ctx.JSON(200, scout)
+}
+
+func geId(name string) string{
+	var Id string
+	client := newFaunaClient()
+	query,err := fauna.FQL("User.byName(${name}).map(.id).first()",map[string]any{"name":name})
+	if err != nil{
+		panic(err)
+	}
+	res,_ := client.Query(query)
+
+	if err := res.Unmarshal(&Id); err != nil{
+		panic(err)
+	}
+
+	return Id
 }
