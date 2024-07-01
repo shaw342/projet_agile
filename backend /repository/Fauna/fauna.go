@@ -109,9 +109,8 @@ func CreateProject(ctx *gin.Context) {
 	ctx.JSON(200, scout)
 }
 
-func getId(name string) string{
+func GetId(name string, client *fauna.Client) string{
 	var Id string
-	client := newFaunaClient()
 	query,err := fauna.FQL("User.byName(${name}).map(.id).first()",map[string]any{"name":name})
 	if err != nil{
 		panic(err)
@@ -123,4 +122,31 @@ func getId(name string) string{
 	}
 
 	return Id
+}
+
+func UpdatePassword(ctx *gin.Context){
+	client := newFaunaClient()
+	user := model.User{}
+	if err := ctx.ShouldBindJSON(user); err != nil{
+		ctx.JSON(404,err)
+	}
+	id := GetId(user.Name,client)
+	command := fmt.Sprintf(`User.byName("%s")?.update({"Password": "%s"})`,user.Name,id)
+	query, err := fauna.FQL(command,nil)
+	if err != nil{
+		panic(err)
+	}
+	res,err := client.Query(query)
+
+	if err != nil{
+		panic(err)
+	}
+
+	var result model.User
+
+	if err := res.Unmarshal(&result); err != nil{
+		panic(err)
+	}
+
+	ctx.JSON(200,result.Password)
 }
