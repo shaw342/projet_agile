@@ -131,7 +131,7 @@ func UpdatePassword(ctx *gin.Context){
 		ctx.JSON(404,err)
 	}
 	id := GetId(user.Name,client)
-	command := fmt.Sprintf(`User.byName("%s")?.update({"Password": "%s"})`,user.Name,id)
+	command := fmt.Sprintf(`User.byId("%s")?.update({"Password": "%s"})`,id)
 	query, err := fauna.FQL(command,nil)
 	if err != nil{
 		panic(err)
@@ -149,4 +149,21 @@ func UpdatePassword(ctx *gin.Context){
 	}
 
 	ctx.JSON(200,result.Password)
+}
+
+
+func GetProjectId(name string,client *fauna.Client) string{
+	var Id string
+	query,err := fauna.FQL("Pojects.byName(${name})",map[string]any{"name":name})
+
+	if err != nil{
+		panic(err)
+	}
+	res,_ := client.Query(query)
+
+	if err := res.Unmarshal(&Id); err != nil{
+		panic(err)
+	}
+
+	return Id
 }
