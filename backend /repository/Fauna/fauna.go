@@ -2,11 +2,11 @@ package repository
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/fauna/fauna-go"
 	"github.com/gin-gonic/gin"
 	"github.com/shaw342/projet_argile/backend/model"
-	
 )
 
 
@@ -166,4 +166,43 @@ func GetProjectId(name string,client *fauna.Client) string{
 	}
 
 	return Id
+}
+
+func GetByName(name string, client *fauna.Client) model.Project{
+	var result model.Project
+
+	query,err := fauna.FQL(`Project.byName(${name})`,map[string]any{"name":name})
+
+	if err != nil{
+		panic(err)
+	}
+
+	res,_ := client.Query(query)
+
+	if err := res.Unmarshal(&result); err != nil{
+		panic(err)
+	}
+
+	return result
+}
+
+func DeletProject(ctx *gin.Context){
+	client := newFaunaClient()
+	projectName := model.Project{}
+	if err := ctx.ShouldBindJSON(&projectName);err != nil{
+		panic(err)
+	}
+	project := GetByName(projectName.Name,client)
+
+	query,err := fauna.FQL(`${project}!.delete()`,map[string]any{"project":project})
+	if err != nil{
+		panic(err)
+	}
+	res,err := client.Query(query)
+
+	if err != nil{
+		panic(err)
+	}
+
+	ctx.JSON(http.StatusAccepted,res)
 }
