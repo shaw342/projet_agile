@@ -1,11 +1,13 @@
 package main
 
 import (
-	//"fmt"
+	"fmt"
+
 
 	"github.com/fauna/fauna-go"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/shaw342/projet_argile/backend/Verification"
 	"github.com/shaw342/projet_argile/backend/model"
 	"github.com/shaw342/projet_argile/backend/repository/Fauna"
 	//"github.com/shaw342/projet_argile/backend/repository"
@@ -17,6 +19,7 @@ var clientERR error
 
 func main() {
 	r := gin.New()
+
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{"http://localhost:8080", "http://localhost:3000"}
 	config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"}
@@ -63,11 +66,25 @@ func main() {
 		ctx.JSON(200, data)
 	})
 
-	r.POST("/user", repository.CreateUser)
-	r.POST("/task", repository.CreateTask)
-	r.POST("/project", repository.CreateProject)
-	r.Post("/getId", repository.getIdByName)
+	v1 := r.Group("/v1")
+	{
+	v1.POST("/user", repository.CreateUser)
+	v1.POST("/task", repository.CreateTask)
+	v1.POST("/project", repository.CreateProject)
+	v1.POST("/changePassword", repository.UpdatePassword)
+	v1.POST("/email",mailVerification)
+	v1.POST("/delete",repository.DeletProject)
+	}
 	r.Run()
 }
 
 
+func mailVerification(ctx *gin.Context){
+	email := model.User{}
+
+	if err := ctx.ShouldBindJSON(&email);err != nil{
+		ctx.JSON(404,err)
+	}
+	fmt.Print(email.Email)
+	verification.SendMail(email.Email)
+}
