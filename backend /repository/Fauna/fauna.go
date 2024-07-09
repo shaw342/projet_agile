@@ -152,19 +152,14 @@ func DeleteTask(ctx *gin.Context){
 	ctx.JSON(200,res)
 }
 
+
 func UpdateProject(ctx *gin.Context){
 	client := NewFaunaClient()
-	updateProject := model.Project{}
-	name := model.Project{}
-	if err := ctx.ShouldBindJSON(&updateProject); err != nil{
+	project := model.Project{}
+	if err := ctx.ShouldBindJSON(&project); err != nil{
 		panic(err)
 	}
-	if err := ctx.ShouldBindJSON(&name); err != nil{
-		panic(err)
-	}
-
-	data := fmt.Sprintf(`Projects.byName("%s").first()!.update(${updateProject})`,name.Name,updateProject)
-	query := fauna.FQL(data,nil)
+	query,_ := fauna.FQL(`Projects.byUserId(${Id}).first()!.update(${project})`,map[string]any{"Id": project.Id,"project":project})
 	res,err := client.Query(query)
 	if err != nil{
 		panic(err)
@@ -175,6 +170,6 @@ func UpdateProject(ctx *gin.Context){
 	if err := res.Unmarshal(&newProject); err != nil{
 		panic(err)
 	}
-
+	ctx.JSON(200,newProject.Name)
 
 }
