@@ -2,6 +2,7 @@ package repository
 
 import (
 	"fmt"
+	"net/http"
 
 	//"net/http"
 
@@ -172,4 +173,28 @@ func UpdateProject(ctx *gin.Context){
 	}
 	ctx.JSON(200,newProject.Name)
 
+}
+func UpdateTasks(ctx *gin.Context)  {
+	client := NewFaunaClient()
+	task := model.Task{}
+
+	if err := ctx.ShouldBindJSON(&task); err != nil{
+		ctx.JSON(404,err)
+	}
+
+	query,_ := fauna.FQL(`Task.byName(${name}).first()!.update(${task})`,map[string]any{"Id": task.Id, "task":task})
+
+	res,err := client.Query(query)
+
+	if err != nil{
+		panic(err)
+	}
+
+	var result model.Project
+
+	if err := res.Unmarshal(&result); err != nil{
+		panic(err)
+	}
+
+	ctx.JSON(http.StatusOK,result)
 }
