@@ -72,7 +72,10 @@ func main() {
 	v1.POST("/task", repository.CreateTask)
 	v1.POST("/project", repository.CreateProject)
 	v1.DELETE("/deleteProject",repository.DeleteProject)
+	v1.DELETE("/deleteTask",repository.DeleteTask)
 	v1.PATCH("/updateProject",repository.UpdateProject)
+	v1.PATCH("/updateTask",repository.CreateTask)
+
 	}
 	r.Run()
 }
