@@ -198,3 +198,36 @@ func UpdateTasks(ctx *gin.Context)  {
 
 	ctx.JSON(http.StatusOK,result)
 }
+
+func createCredential(ctx *gin.Context)  {
+	client := NewFaunaClient()
+	
+
+}
+
+func GetUser(ctx *gin.Context,name string){
+	client := NewFaunaClient()
+
+	query,_ := fauna.FQL(`User.byName(${user}).first()`,map[string]any{"name":name})
+
+	res,_ := client.Query(query)
+	
+	var scout model.Project
+
+	if err := res.Unmarshal(&scout); err != nil{
+		ctx.JSON(404,err)
+	}
+	ctx.JSON(200,scout.Name)
+}
+
+func getPassword(ctx *gin.Context,name string){
+	client := NewFaunaClient()
+
+	query,_ := fauna.FQL("User.byName(${name}).map(.Password).first()",map[string]any{"name":name})
+	res,err:= client.Query(query)
+
+	if err != nil{
+		ctx.JSON(200,err)
+	}
+	
+}
