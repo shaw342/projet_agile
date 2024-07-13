@@ -3,9 +3,6 @@ package repository
 import (
 	"fmt"
 	"net/http"
-
-	//"net/http"
-
 	"github.com/fauna/fauna-go"
 	"github.com/gin-gonic/gin"
 	"github.com/shaw342/projet_argile/backend/model"
@@ -39,6 +36,7 @@ func CreateUser(ctx *gin.Context) {
 	if err != nil {
 		panic(err)
 	}
+	
 	var scout model.User
 
 	if err := res.Unmarshal(&scout); err != nil {
@@ -46,7 +44,10 @@ func CreateUser(ctx *gin.Context) {
 	}
 
 	fmt.Println(scout.Name)
+	var Id = GetId(scout.Name,client)
+	CreatCredential(Id,scout.Name)
 	ctx.JSON(200, scout)
+	
 }
 
 
@@ -107,10 +108,8 @@ func CreateProject(ctx *gin.Context) {
 	}
 
 	fmt.Println(scout.Name)
-
 	ctx.JSON(200, scout)
 }
-
 func GetId(name string, client *fauna.Client) string{
 	var Id string
 	query,err := fauna.FQL("User.byName(${name}).map(.id).first()",map[string]any{"name":name})
@@ -199,16 +198,10 @@ func UpdateTasks(ctx *gin.Context)  {
 	ctx.JSON(http.StatusOK,result)
 }
 
-func createCredential(ctx *gin.Context)  {
-	client := NewFaunaClient()
-	
-
-}
-
 func GetUser(ctx *gin.Context,name string){
 	client := NewFaunaClient()
 
-	query,_ := fauna.FQL(`User.byName(${user}).first()`,map[string]any{"name":name})
+	query,_ := fauna.FQL(`User.byName(${name}).first()`,map[string]any{"name":name})
 
 	res,_ := client.Query(query)
 	
@@ -220,14 +213,12 @@ func GetUser(ctx *gin.Context,name string){
 	ctx.JSON(200,scout.Name)
 }
 
-func getPassword(ctx *gin.Context,name string){
+func CreatCredential(Id string,Password string) *fauna.QuerySuccess{
 	client := NewFaunaClient()
-
-	query,_ := fauna.FQL("User.byName(${name}).map(.Password).first()",map[string]any{"name":name})
-	res,err:= client.Query(query)
-
+	query,_ := fauna.FQL("Credential.create(${document:${Id},pasword:${password}})",map[string]any{"Id":Id,"password":Password})
+	res,err := client.Query(query)
 	if err != nil{
-		ctx.JSON(200,err)
+		panic(err)
 	}
-	
+	return res
 }
