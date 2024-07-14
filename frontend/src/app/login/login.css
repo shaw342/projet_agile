@@ -5,6 +5,7 @@ body{
     justify-content: center;
     height: 100vh;
 }
+
 #form{
     width: 400px;
     height: 400px;
@@ -21,6 +22,9 @@ input{
     border: none;
     background-color:#ECEFF5;
     border-bottom:solid black 1px ;
+}
+input:focus{
+    outline: none;
 }
 form{
     height: 200px;
@@ -67,8 +71,8 @@ form{
 }
 
 .button-3:focus {
-  box-shadow: rgba(46, 117, 164, 0.4) 0 0 0 3px;
-  outline: none;
+    box-shadow: rgba(46, 117, 164, 0.4) 0 0 0 3px;
+    outline: none;
 }
 
 .button-3:disabled {

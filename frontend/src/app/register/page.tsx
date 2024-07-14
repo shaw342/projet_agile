@@ -14,13 +14,10 @@ export default function register() {
           name:formData.get("name"),
           email:formData.get("email"),
           password:formData.get("password"),
-
         }
         
-        
-        // Extract form data and convert to JSON object
       
-        const response = await fetch("http://localhost:8080/user", {
+        const response = await fetch("http://localhost:8080/api/v1/user", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -38,10 +35,10 @@ export default function register() {
         <h1>Signup</h1>
     </div>
     <form onSubmit={onSubmit}>
-    <input type="text" name="name" id="name" />
-    <IoMail id="mail-icon"/>
-    <input type="email" name="email" id="email"/>
-    <input type="text" name="password" id="password" />
+    <input type="text" name="name" id="name" placeholder="name"/>
+    <input type="email" name="email" id="email" placeholder="email"/>
+    <input type="text" name="password" id="password" placeholder="password"/>
+    <input type="text" name="confirme" id="confirme_password" placeholder="confirme your password"/>
     <button type="submit"  className="button-3">submit</button>
     </form>
     </div>)
