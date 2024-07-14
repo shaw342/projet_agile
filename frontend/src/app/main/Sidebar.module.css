@@ -1,0 +1,41 @@
+/* components/Sidebar.module.css */
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    background-color:#d2a56d;
+    padding-top: 20px;
+    position: fixed;
+}
+
+.sidebarBrand {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.sidebarBrand a {
+    color: #000000;
+    text-decoration: none;
+    font-size: 1.5em;
+}
+
+.sidebarNav {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebarNav li {
+    text-align: center;
+    margin: 10px 0;
+}
+
+.sidebarNav a {
+    color: #000000;
+    text-decoration: none;
+    display: block;
+    padding: 10px 20px;
+    transition: background-color 0.3s;
+}
+
+.sidebarNav a:hover {
+    background-color: #a4660e;
+}
