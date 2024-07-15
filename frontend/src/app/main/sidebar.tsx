@@ -1,5 +1,6 @@
 // components/Sidebar.js
 import styles from './Sidebar.module.css';
+import { IoChatbubbleEllipsesOutline } from "react-icons/io5";
 
 const Sidebar = () => {
     return (
@@ -9,9 +10,9 @@ const Sidebar = () => {
             </div>
             <ul className={styles.sidebarNav}>
                 <li><a href="#home">Accueil</a></li>
-                <li><a href="#services">Services</a></li>
-                <li><a href="#about">À propos</a></li>
-                <li><a href="#contact">Contact</a></li>
+                <li><a href="#services">notes</a></li>
+                <li><a href="#about">calandrier</a></li>
+                <li><a href="#contact"><IoChatbubbleEllipsesOutline /> Chat</a></li>
             </ul>
         </div>
     );

@@ -1,0 +1,21 @@
+/* components/TaskCard.module.css */
+.taskCard {
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    max-width: 400px;
+    text-align: center;
+    margin: 20px auto;
+  }
+  
+  .taskCard h2 {
+    margin-top: 0;
+    color: #333;
+  }
+  
+  .taskCard p {
+    color: #555;
+    font-size: 1.1em;
+  }
+  
