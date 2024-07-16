@@ -3,6 +3,7 @@ package repository
 import (
 	"fmt"
 	"net/http"
+
 	"github.com/fauna/fauna-go"
 	"github.com/gin-gonic/gin"
 	"github.com/shaw342/projet_argile/backend/model"
@@ -17,6 +18,7 @@ func NewFaunaClient() *fauna.Client {
 	}
 	return client
 }
+
 
 
 func CreateUser(ctx *gin.Context) {
@@ -215,10 +217,33 @@ func GetUser(ctx *gin.Context,name string){
 
 func CreatCredential(Id string,Password string) *fauna.QuerySuccess{
 	client := NewFaunaClient()
-	query,_ := fauna.FQL("Credential.create(${document:${Id},pasword:${password}})",map[string]any{"Id":Id,"password":Password})
+	query,_ := fauna.FQL("Credential.create(${document:User.byId(${Id}),pasword:${password}})",map[string]any{"Id":Id,"password":Password})
 	res,err := client.Query(query)
 	if err != nil{
 		panic(err)
 	}
 	return res
+}
+
+func  GetTask(ctx *gin.Context){
+	client := NewFaunaClient()
+	name := model.Task{}
+	if err := ctx.ShouldBindJSON(&name);err != nil{
+		ctx.JSON(404,err)
+	}
+	query,err := fauna.FQL("Task.byName(${name}).first()",map[string]any{"name":name.Name})
+
+	if err != nil{
+		panic(err)
+	}
+	res,err := client.Query(query)
+	if err != nil{
+		panic(err)
+	}
+	var task model.Task
+
+	if err := res.Unmarshal(&task);err != nil{
+		ctx.JSON(403,res)
+	}
+	ctx.JSON(200,task)
 }
