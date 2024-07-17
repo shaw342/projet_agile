@@ -68,14 +68,15 @@ func main() {
 
 	v1 := r.Group("api/v1")
 	{
-	v1.POST("/user", repository.CreateUser)
-	v1.POST("/task", repository.CreateTask)
-	v1.POST("/project", repository.CreateProject)
-	v1.DELETE("/deleteProject",repository.DeleteProject)
-	v1.DELETE("/deleteTask",repository.DeleteTask)
-	v1.PATCH("/updateProject",repository.UpdateProject)
-	v1.PATCH("/updateTask",repository.CreateTask)
-
+		v1.POST("/user", repository.CreateUser)
+		v1.POST("/task", repository.CreateTask)
+		v1.POST("/project", repository.CreateProject)
+		v1.POST("/login",repository.login)
+		v1.DELETE("/deleteProject",repository.DeleteProject)
+		v1.DELETE("/deleteTask",repository.DeleteTask)
+		v1.PATCH("/updateProject",repository.UpdateProject)
+		v1.PATCH("/updateTask",repository.UpdateTasks)
+		v1.GET("/getTask",repository.GetTask) 
 	}
 	r.Run()
 }
