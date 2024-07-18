@@ -10,8 +10,7 @@ import (
 )
 
 
-
-func NewFaunaClient() *fauna.Client {
+func  NewFaunaClient() *fauna.Client {
 	client,err := fauna.NewDefaultClient()
 	if err != nil{
 		panic(err)
@@ -144,12 +143,12 @@ func DeleteProject(ctx *gin.Context){
 
 func DeleteTask(ctx *gin.Context){
 	client := NewFaunaClient()
-	name := model.Task{}
-	if err := ctx.ShouldBindJSON(&name);err != nil{
+	data := model.Task{}
+	if err := ctx.ShouldBindJSON(&data);err != nil{
 		panic(err)
 	}
-	delete := fmt.Sprintf(`Task.byName(%s).first()!.delete()`,name.Name)
-	query,_ := fauna.FQL(delete,nil)
+	
+	query,_ := fauna.FQL(`Task.byName(${name}).first()!.delete()`,map[string]any{"name":data.Name})
 	res,_ := client.Query(query)
 	ctx.JSON(200,res)
 }
@@ -200,10 +199,13 @@ func UpdateTasks(ctx *gin.Context)  {
 	ctx.JSON(http.StatusOK,result)
 }
 
-func GetUser(ctx *gin.Context,name string){
+func GetUser(ctx *gin.Context){
 	client := NewFaunaClient()
-
-	query,_ := fauna.FQL(`User.byName(${name}).first()`,map[string]any{"name":name})
+	data := model.User{}
+	if err := ctx.ShouldBindJSON(&data);err != nil{
+		panic(err)
+	}
+	query,_ := fauna.FQL(`User.byName(${name}).first()`,map[string]any{"name":data.Name})
 
 	res,_ := client.Query(query)
 	
@@ -217,7 +219,7 @@ func GetUser(ctx *gin.Context,name string){
 
 func CreatCredential(Id string,Password string) *fauna.QuerySuccess{
 	client := NewFaunaClient()
-	query,_ := fauna.FQL("Credential.create(${document:User.byId(${Id}),pasword:${password}})",map[string]any{"Id":Id,"password":Password})
+	query,_ := fauna.FQL("Credential.create({document:User.byId(${Id}),password:${password}})",map[string]any{"Id":Id,"password":Password})
 	res,err := client.Query(query)
 	if err != nil{
 		panic(err)
@@ -225,7 +227,7 @@ func CreatCredential(Id string,Password string) *fauna.QuerySuccess{
 	return res
 }
 
-func  GetTask(ctx *gin.Context){
+func GetTask(ctx *gin.Context){
 	client := NewFaunaClient()
 	name := model.Task{}
 	if err := ctx.ShouldBindJSON(&name);err != nil{
@@ -246,4 +248,28 @@ func  GetTask(ctx *gin.Context){
 		ctx.JSON(403,res)
 	}
 	ctx.JSON(200,task)
+}
+func GetProject(ctx *gin.Context){
+	client := NewFaunaClient()
+	name := model.Project{}
+
+	if err := ctx.ShouldBindJSON(&name);err != nil{
+		panic(err)
+	}
+	query,err := fauna.FQL(`Project.byName(${name})`,map[string]any{"name":name})
+
+	if err != nil{
+		panic(err)
+	}
+	res,err := client.Query(query)
+
+	if err != nil{
+		panic(err)
+	}
+	var result model.Project
+	if err := res.Unmarshal(result); err != nil{
+		panic(err)
+	}
+	ctx.JSON(200,result)
+	
 }
