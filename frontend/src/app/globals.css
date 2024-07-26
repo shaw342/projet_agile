@@ -1,5 +1,13 @@
-*{
+/* styles/globals.css */
+html, body {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-}
+    height: 100%;
+    width: 100%;
+    overflow: hidden; /* Empêche le défilement */
+  }
+  
+  #__next {
+    height: 100%;
+  }
+  

@@ -3,6 +3,7 @@ import  Sidebar  from "./sidebar";
 import { useEffect,useState } from "react";
 import styles from './TaskCard.module.css';
 import Task from "./task";
+import ProfileButton from './ProfileButton';
 
 import "./Page.css"
 export default function Main() {
@@ -19,8 +20,11 @@ export default function Main() {
   
     return (
       <>
+      <Sidebar />
         <div className="container">
-        <Sidebar />
+        <header>
+          <ProfileButton/>
+        </header>
         <main>
         <div className={styles.taskCard}>
           <Task/>

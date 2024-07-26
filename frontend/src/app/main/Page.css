@@ -2,8 +2,24 @@
     padding: 0;
     margin: 0;
     box-sizing: border-box;
+    overflow: hidden;
 }
-body{
+html, body {
+    margin: 0;
+    padding: 0;
     height: 100%;
     width: 100%;
+    overflow: hidden; /* Empêche le défilement */
+  }
+.container{
+    height: 100%;
+    width: 100%;
+    
+}
+header{
+    width: 100%;
+    height: 80px;
+    background-color: rgb(0, 255, 255);
+    display: flex;
+    justify-content: flex-end;
 }
